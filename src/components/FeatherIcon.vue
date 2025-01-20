@@ -2,8 +2,8 @@
   <div class="feather-icon" v-html="html" />
 </template>
 
-<script>
-const feather = require("feather-icons");
+<script lang="ts">
+import feather from "feather-icons";
 
 export default {
   name: "FeatherIcon",
@@ -11,34 +11,43 @@ export default {
   props: {
     icon: {
       type: String,
-      required: true
+      required: true,
     },
 
     width: {
       type: Number,
-      default: 16
+      default: 16,
     },
 
     height: {
       type: Number,
-      default: 16
+      default: 16,
     },
 
     color: {
       type: String,
-      default: "currentColor"
+      default: "currentColor",
     },
-    
+
     fill: {
       type: String,
-      default: "none"
-    }
+      default: "none",
+    },
   },
 
   computed: {
     html() {
-      return feather.icons[this.icon].toSvg({ width: this.width, height: this.height, color: this.color, fill: this.fill });
-    }
-  }
-}
+      if (!feather.icons[this.icon as keyof typeof feather.icons]) {
+        throw new Error(`Icon "${this.icon}" not found`);
+      }
+
+      return feather.icons[this.icon as keyof typeof feather.icons].toSvg({
+        width: this.width,
+        height: this.height,
+        color: this.color,
+        fill: this.fill,
+      });
+    },
+  },
+};
 </script>

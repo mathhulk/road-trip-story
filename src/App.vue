@@ -25,7 +25,9 @@
             <div class="itinerary-menu">
               <div class="menu-description">
                 <p class="description-distance">{{ distance }} miles</p>
-                <p class="description-steps">{{ filteredSteps.length }} locations</p>
+                <p class="description-steps">
+                  {{ filteredSteps.length }} locations
+                </p>
               </div>
 
               <div class="menu-button" @click="toggleItinerary">
@@ -33,7 +35,12 @@
               </div>
             </div>
 
-            <div class="itinerary-step" v-for="(filteredStep, filteredIndex) in filteredSteps" :key="filteredIndex" @click="setIndex(filteredIndex)">
+            <div
+              class="itinerary-step"
+              v-for="(filteredStep, filteredIndex) in filteredSteps"
+              :key="filteredIndex"
+              @click="setIndex(filteredIndex)"
+            >
               <div class="step-icon">
                 <FeatherIcon :icon="getLocationIcon(filteredIndex)" />
               </div>
@@ -43,15 +50,23 @@
                 <p class="location-city">{{ filteredStep.location.city }}</p>
               </div>
 
-              <p v-if="filteredIndex > 0" class="step-distance">{{ filteredStep.distance }} mi.</p>
+              <p v-if="filteredIndex > 0" class="step-distance">
+                {{ filteredStep.distance }} mi.
+              </p>
             </div>
           </div>
 
           <!-- To-do: Preview class, playlist component -->
-          <a target="_blank" href="https://open.spotify.com/playlist/5MliYoExKI6hQ7qmDVFiop?si=b661449ff5534e90">
+          <a
+            target="_blank"
+            href="https://open.spotify.com/playlist/5MliYoExKI6hQ7qmDVFiop?si=b661449ff5534e90"
+          >
             <div class="overview-playlist">
-              <img class="playlist-image" :src="filteredSteps[3].media.images[0]" />
-              
+              <img
+                class="playlist-image"
+                :src="filteredSteps[3].media.images[0]"
+              />
+
               <div class="playlist-overlay">
                 <div class="overlay-menu">
                   <div class="menu-button">
@@ -82,11 +97,15 @@
           </div>
         </div>
       </div>
-        
+
       <div class="overlay-end">
         <div class="overlay-step">
           <div class="step-progress">
-            <div class="progress-bar" ref="progressBar" @animationend="skipNext" />
+            <div
+              class="progress-bar"
+              ref="progressBar"
+              @animationend="skipNext"
+            />
           </div>
 
           <div class="step-menu">
@@ -95,7 +114,11 @@
               <p class="location-city">{{ step.location.city }}</p>
             </div>
 
-            <div class="menu-button" @click="skipPrevious" :class="{ disabled: index === 0 }">
+            <div
+              class="menu-button"
+              @click="skipPrevious"
+              :class="{ disabled: index === 0 }"
+            >
               <FeatherIcon icon="skip-back" />
             </div>
 
@@ -103,7 +126,11 @@
               <FeatherIcon :icon="togglePausedIcon" />
             </div>
 
-            <div class="menu-button" @click="skipNext" :class="{ disabled: index === steps.length - 1 }">
+            <div
+              class="menu-button"
+              @click="skipNext"
+              :class="{ disabled: index === steps.length - 1 }"
+            >
               <FeatherIcon icon="skip-forward" />
             </div>
           </div>
@@ -113,7 +140,7 @@
           <!-- To-do: Song component -->
           <div v-if="step.song" class="side-bar-song">
             <img class="song-image" :src="step.song.image" />
-            
+
             <div class="song-description">
               <p class="description-title">{{ step.song.title }}</p>
               <p class="description-artist">{{ step.song.artist }}</p>
@@ -122,7 +149,13 @@
 
           <!-- To-do: Lyrics component -->
           <div v-if="step.lyrics" class="side-bar-lyrics">
-            <p class="lyrics-line" v-for="(line, number) in step.lyrics" :key="number">{{ line }}</p>
+            <p
+              class="lyrics-line"
+              v-for="(line, number) in step.lyrics"
+              :key="number"
+            >
+              {{ line }}
+            </p>
           </div>
         </div>
 
@@ -133,7 +166,11 @@
           </div>
 
           <div v-if="step.media.images" class="media-gallery">
-            <div class="gallery-image" v-for="image in step.media.images" :key="image">
+            <div
+              class="gallery-image"
+              v-for="image in step.media.images"
+              :key="image"
+            >
               <img :src="image" />
             </div>
           </div>
@@ -155,42 +192,18 @@
   </div>
 
   <!-- To-do: Start ("splash") component -->
-  <div v-else class="start-wrapper">
-    <div class="start">
-      <div class="start-icon">
-        <FeatherIcon icon="heart" fill="currentColor" :width="16" :height="16" />
-      </div>
-
-      <p class="start-heading"><span class="important">California coast</span> with love</p>
-
-      <p class="start-description">Annika, I hope you enjoy this interactive story I've put together to memorialize our trip up the coast and in preparation for our next trip to France! <span class="important">With love, Matthew</span>.</p>
-
-      <!-- To-do: Button component -->
-      <div class="start-button" @click="enter">
-        <div class="button-icon">
-          <FeatherIcon icon="play" />
-        </div>
-
-        <p class="button-text">Enter</p>
-      </div>
-    </div>
-  </div>
 </template>
 
-<script>
-import "@fontsource/inter";
-import "@fontsource/inter/500.css";
-import "@fontsource/inter/900.css";
-
+<script lang="ts">
 import FeatherIcon from "@/components/FeatherIcon";
 
-import steps from "./steps";
+import locations from "./locations";
 
 export default {
   name: "RoadTripStory",
 
   components: {
-    FeatherIcon
+    FeatherIcon,
   },
 
   data() {
@@ -207,7 +220,7 @@ export default {
       itinerary: false,
       distance: null,
 
-      map: null
+      map: null,
     };
   },
 
@@ -225,11 +238,13 @@ export default {
     },
 
     step() {
-      return this.steps[this.index];
+      if (this.index === null) return;
+
+      return this.steps?.[this.index];
     },
 
     filteredSteps() {
-      return this.steps.filter(step => {
+      return this.steps.filter((step) => {
         if (step.duration === undefined) return false;
         return true;
       });
@@ -243,13 +258,13 @@ export default {
 
       if (innerWidth <= 992) return center;
 
-      let offset = [ 432, 0 ];
+      let offset = [432, 0];
 
       /* To-do: Offset does not work on iOS.
       if (innerWidth <= 992) offset = [ 0, 66 ];
       else if (innerWidth <= 1400) offset = [ 224, 0 ];*/
 
-      if (innerWidth <= 1400) offset = [ 224, 0 ];
+      if (innerWidth <= 1400) offset = [224, 0];
 
       const point = this.map.project(center, zoom).add(offset);
       return this.map.unproject(point, zoom);
@@ -263,9 +278,9 @@ export default {
 
       const center = bounds.getSouthEast();
       const zoom = this.map.getBoundsZoom(bounds);
-      
-      let offset = [ 448, 0 ];
-      
+
+      let offset = [448, 0];
+
       /* To-do: Offset does not work on iOS
       if (innerWidth <= 992) offset = [ 0, -66 ];*/
 
@@ -282,8 +297,8 @@ export default {
 
     // To-do: Clean up
     initialize() {
-      this.steps = steps.map(step => {
-        const [ lat, long ] = step.location.center;
+      this.steps = locations.map((step) => {
+        const [lat, long] = step.location.center;
         step.location.center = window.L.latLng(lat, long);
 
         if (step.song) {
@@ -292,10 +307,11 @@ export default {
         }
 
         if (step.media) {
-          if (step.media.video) step.media.video = "./assets/videos/" + step.media.video;
+          if (step.media.video)
+            step.media.video = "./assets/videos/" + step.media.video;
 
           if (step.media.images) {
-            step.media.images = step.media.images.map(image => {
+            step.media.images = step.media.images.map((image) => {
               return require("@/assets/images/notes/" + image);
             });
           }
@@ -310,18 +326,22 @@ export default {
         attributionControl: false,
         zoomControl: false,
         center,
-        zoom
+        zoom,
       });
 
-      window.L.tileLayer("https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}", {
-        maxZoom: 18,
-        id: "mathhulk/cl0ovzd7j000u14mlcv35f827",
-        tileSize: 512,
-        zoomOffset: -1,
-        accessToken: "pk.eyJ1IjoibWF0aGh1bGsiLCJhIjoiY2t6bTFhcDU2M2prOTJwa3VwcTJ2d2dpMiJ9.WEJWEP_qrKGXkYOgbIsaGg"
-      }).addTo(this.map);
+      window.L.tileLayer(
+        "https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}",
+        {
+          maxZoom: 18,
+          id: "mathhulk/cl0ovzd7j000u14mlcv35f827",
+          tileSize: 512,
+          zoomOffset: -1,
+          accessToken:
+            "pk.eyJ1IjoibWF0aGh1bGsiLCJhIjoiY2t6bTFhcDU2M2prOTJwa3VwcTJ2d2dpMiJ9.WEJWEP_qrKGXkYOgbIsaGg",
+        }
+      ).addTo(this.map);
 
-      const waypoints = steps.map(step => {
+      const waypoints = locations.map((step) => {
         const { center, title } = step.location;
 
         if (title) return { latLng: center, name: title };
@@ -335,12 +355,8 @@ export default {
         addWaypoints: false,
         draggableWaypoints: false,
         lineOptions: {
-          styles: [
-            { color: "blue", opacity: 0.5, weight: 3 }
-          ],
-          missingRouteStyles: [
-            { color: "blue", opacity: 0.25, weight: 3 }
-          ]
+          styles: [{ color: "blue", opacity: 0.5, weight: 3 }],
+          missingRouteStyles: [{ color: "blue", opacity: 0.25, weight: 3 }],
         },
         createMarker: (i, waypoint) => {
           if (waypoint.name) {
@@ -350,37 +366,48 @@ export default {
           }
 
           return false;
-        }
-      }).on("routesfound", (event) => {
-        const { summary, instructions } = event.routes[0];
+        },
+      })
+        .on("routesfound", (event) => {
+          const { summary, instructions } = event.routes[0];
 
-        // To-do: Meters to miles conversion function
-        this.distance = (summary.totalDistance / 1609.34).toFixed(2).toLocaleString();
+          // To-do: Meters to miles conversion function
+          this.distance = (summary.totalDistance / 1609.34)
+            .toFixed(2)
+            .toLocaleString();
 
-        let distance = 0;
-        let index = 1;
+          let distance = 0;
+          let index = 1;
 
-        for (const instruction of instructions) {
-          distance += instruction.distance;
+          for (const instruction of instructions) {
+            distance += instruction.distance;
 
-          if ( instruction.type && ["WaypointReached", "DestinationReached"].includes(instruction.type) ) {
-            if (this.steps[index].duration === undefined) continue;
+            if (
+              instruction.type &&
+              ["WaypointReached", "DestinationReached"].includes(
+                instruction.type
+              )
+            ) {
+              if (this.steps[index].duration === undefined) continue;
 
-            // To-do: Unit based on distance
-            this.steps[index].distance = (distance / 1609.34).toFixed(2).toLocaleString();
+              // To-do: Unit based on distance
+              this.steps[index].distance = (distance / 1609.34)
+                .toFixed(2)
+                .toLocaleString();
 
-            distance = 0;
-            index++;
+              distance = 0;
+              index++;
+            }
           }
-        }
 
-        this.loading = false;
-      }).addTo(this.map);
+          this.loading = false;
+        })
+        .addTo(this.map);
     },
 
     enter() {
       this.story = true;
-      
+
       this.index = 0;
     },
 
@@ -428,7 +455,7 @@ export default {
       
       this.map.flyToBounds(bounds, { paddingTopLeft, paddingBottomRight });*/
 
-      const offsetBounds = this.offsetBounds(bounds); 
+      const offsetBounds = this.offsetBounds(bounds);
       this.map.flyToBounds(offsetBounds);
     },
 
@@ -465,7 +492,7 @@ export default {
       this.index++;
     },
 
-    // To-do: Resize route during zoom 
+    // To-do: Resize route during zoom
     setIndex(index) {
       this.index = index;
     },
@@ -488,21 +515,14 @@ export default {
         // To-do: Prevent updates after an animation has finished
         this.audio.volume = Math.min(1, (duration - relativeCurrentTime) / 5);
       }
-    }
+    },
   },
 
   watch: {
-    index: function(index, previousIndex) {
+    index: function (index, previousIndex) {
       if (index === null) return;
 
       const step = this.steps[index];
-
-      if (step.duration === undefined) {
-        if (index < previousIndex) this.skipPrevious();
-        else this.skipNext();
-
-        return;
-      }
 
       if (this.audio) this.audio.pause();
 
@@ -527,15 +547,13 @@ export default {
 
       this.map.flyTo(this.offsetCenter(center, zoom), zoom);
 
-      if (step.song) {
-        const { audio, startTime } = step.song;
+      const { audio, startTime } = step.song;
 
-        // To-do: Buffering indicator
-        this.audio = new Audio(audio);
-        this.audio.currentTime = startTime;
-        this.audio.addEventListener("timeupdate", this.handleTimeUpdate);
-        this.audio.play();
-      }
+      // To-do: Buffering indicator
+      this.audio = new Audio(audio);
+      this.audio.currentTime = startTime;
+      this.audio.addEventListener("timeupdate", this.handleTimeUpdate);
+      this.audio.play();
 
       this.$nextTick(() => {
         const { progressBar } = this.$refs;
@@ -550,15 +568,17 @@ export default {
 
         this.paused = false;
       });
-    }
-  }
-}
+    },
+  },
+};
 </script>
 
 <style lang="scss">
 @import "./assets/reset.css";
 
-body, #app, #map {
+body,
+#app,
+#map {
   height: 100%;
 }
 
@@ -576,192 +596,6 @@ body {
 
 .leaflet-routing-container.leaflet-bar.leaflet-routing-container-hide.leaflet-control {
   display: none;
-}
-
-.loading-wrapper, .start-wrapper {
-  position: fixed;
-
-  z-index: 400;
-
-  height: 100%;
-  width: 100%;
-
-  left: 0;
-  top: 0;
-
-  background: #ECE1CB;
-
-  @media (max-width: 992px) {
-    padding-right: 24px;
-    padding-left: 24px;
-  }
-}
-
-.start-wrapper {
-  display: grid;
-  place-items: center;
-  
-  .start {
-    position: relative;
-
-    @media (min-width: 992px) {
-      max-width: 50%;
-    }
-
-    .start-icon {
-      position: absolute;
-
-      color: #ef4444;
-
-      left: -12px;
-      top: -12px;
-
-      transform: rotate(-22.5deg);
-    }
-
-    .start-button {
-      display: flex;
-      align-items: center;
-
-      cursor: pointer;
-
-      &:hover .button-icon {
-        color: white;
-      }
-
-      .button-icon {
-        height: 32px;
-        width: 32px;
-
-        border-radius: 4px;
-
-        background-color: black;
-
-        transition: all 150ms ease;
-
-        color: #8D8D8D;
-
-        display: grid;
-        place-items: center;
-
-        margin-right: 16px;
-      }
-
-      .button-text {
-        font-size: 16px;
-        font-weight: 500;
-      }
-    }
-
-    p.start-heading {
-      font-size: 48px;
-      font-weight: 900;
-      color: #ef4444;
-
-      line-height: 1;
-
-      margin-bottom: 32px;
-
-      .important {
-        background-image: url("../public/assets/images/coast.jpg");
-        background-size: cover;
-        background-position: center;
-        background-clip: text;
-
-        color: transparent;
-      }
-    }
-
-    p.start-description {
-      font-size: 16px;
-      color: rgba(black, 0.5);
-
-      margin-bottom: 32px;
-
-      .important {
-        color: black;
-        font-weight: 500;
-
-        border-bottom: 2px solid rgba(black, 0.1);
-      }
-    }
-  }
-}
-
-.loading-wrapper {
-  display: flex;
-  align-items: center;
-
-  .loading {
-    display: flex;
-
-    @media (min-width: 992px) {
-      margin-left: 25%;
-    }
-
-    @keyframes spin {
-      0% {
-        transform: rotate(0deg);
-      }
-
-      25% {
-        transform: rotate(120deg);
-      }
-
-      75% {
-        transform: rotate(240deg);
-      }
-
-      100% {
-        transform: rotate(360deg);
-      }
-    }
-
-    .loading-text {
-      line-height: 1;
-
-      margin-left: 16px;
-
-      .text-title {
-        font-size: 16px;
-        font-weight: 500;
-
-        margin-bottom: 4px;
-      }
-
-      .text-description {
-        font-size: 12px;
-        color: rgba(black, 0.5);
-      }
-    }
-
-    .loading-spinner {
-      height: 32px;
-      width: 32px;
-
-      border-radius: 4px;
-
-      display: grid;
-      place-items: center;
-
-      background-color: black;
-
-      &::before {
-        content: "";
-
-        height: 16px;
-        width: 16px;
-
-        border-radius: 50%;
-
-        border-style: solid;
-        border-width: 2px;
-        border-color: transparent white white white;
-
-        animation: spin 500ms linear infinite;
-      }
-    }
-  }
 }
 
 // To-do: Breakpoint max. vs. min.
@@ -785,7 +619,12 @@ body {
 
   // To-do: Different gradient for 992px - 1400px..?
   @media (min-width: 992px) {
-    background: linear-gradient(to left, #ECE1CB 448px, rgba(#ECE1CB, 0.5), transparent 864px);
+    background: linear-gradient(
+      to left,
+      #ece1cb 448px,
+      rgba(#ece1cb, 0.5),
+      transparent 864px
+    );
 
     overflow: hidden;
 
@@ -840,7 +679,12 @@ body {
     }
 
     @media (max-width: 992px) {
-      background: linear-gradient(to bottom, transparent, rgba(#ECE1CB, 0.5), #ECE1CB 132px);
+      background: linear-gradient(
+        to bottom,
+        transparent,
+        rgba(#ece1cb, 0.5),
+        #ece1cb 132px
+      );
 
       padding: 24px;
     }
@@ -878,7 +722,7 @@ body {
 
       @media (max-width: 1400px) {
         flex-shrink: 0;
-        
+
         position: sticky;
 
         z-index: 401;
@@ -1011,7 +855,7 @@ body {
         display: grid;
         place-items: center;
 
-        color: #8D8D8D;
+        color: #8d8d8d;
 
         background-color: rgba(white, 0.1);
 
@@ -1241,7 +1085,8 @@ body {
             bottom: -8px;
           }
 
-          &::before, &::after {
+          &::before,
+          &::after {
             height: 8px;
             width: 2px;
 
@@ -1268,7 +1113,7 @@ body {
           display: grid;
           place-items: center;
 
-          color: #8D8D8D;
+          color: #8d8d8d;
 
           background-color: rgba(white, 0.1);
 
@@ -1336,7 +1181,7 @@ body {
 
           background-color: rgba(white, 0.1);
 
-          color: #8D8D8D;
+          color: #8d8d8d;
 
           cursor: pointer;
 
@@ -1374,7 +1219,7 @@ body {
 
       background-color: rgba(white, 0.1);
 
-      color: #8D8D8D;
+      color: #8d8d8d;
 
       display: grid;
       place-items: center;
@@ -1434,7 +1279,7 @@ body {
 
     .side-bar-lyrics {
       flex-grow: 1;
-      
+
       padding-left: 16px;
       padding-right: 16px;
 
