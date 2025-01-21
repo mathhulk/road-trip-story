@@ -16,15 +16,117 @@
 </template>
 
 <script setup lang="ts">
-import mapboxgl, { Map } from "mapbox-gl";
 import { onMounted, ref, provide } from "vue";
+
+import mapboxgl, { Map } from "mapbox-gl";
+import "mapbox-gl/dist/mapbox-gl.css";
+
+// @ts-expect-error - MapboxDirections does not provide types
+import MapboxDirections from "@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions";
+import "@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions.css";
 import locations from "./locations";
 
-mapboxgl.accessToken =
+const TOKEN =
   "pk.eyJ1IjoibWF0aGh1bGsiLCJhIjoiY2t6bTFhcDU2M2prOTJwa3VwcTJ2d2dpMiJ9.WEJWEP_qrKGXkYOgbIsaGg";
 
+mapboxgl.accessToken = TOKEN;
+
 const map = ref<Map>();
+const directions = ref<MapboxDirections>();
 const loading = ref(true);
+
+// @ts-expect-error - MapboxDirections does not provide types
+const handleRoute = ({ route }) => {
+  if (!map.value || !directions.value) return;
+
+  console.log(route);
+
+  for (let index = 0; index < route[0].legs.length; index++) {
+    const { steps } = route[0].legs[index];
+
+    const start = document.createElement("div");
+    start.className = "marker";
+    start.textContent = (index + 1).toLocaleString();
+
+    new mapboxgl.Marker({
+      color: "blue",
+    })
+      .setLngLat(steps[0].maneuver.location)
+      .addTo(map.value);
+
+    if (index !== route[0].legs.length - 1) continue;
+
+    new mapboxgl.Marker({
+      color: "blue",
+    })
+      .setLngLat(steps[steps.length - 1].maneuver.location)
+      .addTo(map.value);
+  }
+
+  map.value.jumpTo({ center: [-122.2592173, 37.8721508] });
+
+  // Remove unnecessary layers
+  map.value.removeLayer("directions-route-line");
+  map.value.removeLayer("directions-waypoint-point-casing");
+  map.value.removeLayer("directions-waypoint-point");
+  map.value.removeLayer("directions-origin-point");
+  map.value.removeLayer("directions-destination-point");
+  map.value.removeLayer("directions-origin-label");
+  map.value.removeLayer("directions-destination-label");
+
+  loading.value = false;
+};
+
+const handleLoad = () => {
+  if (!map.value) return;
+
+  directions.value = new MapboxDirections({
+    styles: [
+      {
+        id: "directions-route-line-casing",
+        type: "line",
+        source: "directions",
+        layout: {
+          "line-cap": "round",
+          "line-join": "round",
+        },
+        paint: {
+          "line-color": "#3b82f6",
+          "line-width": 4,
+        },
+        filter: [
+          "all",
+          ["in", "$type", "LineString"],
+          ["in", "route", "selected"],
+        ],
+      },
+    ],
+    accessToken: TOKEN,
+    unit: "imperial",
+    profile: "mapbox/driving",
+    controls: {
+      inputs: false,
+      instructions: false,
+      profileSwitcher: false,
+    },
+    interactive: false,
+    instructions: false,
+  });
+
+  map.value.addControl(directions.value);
+
+  directions.value.on("route", handleRoute);
+
+  directions.value.setOrigin(locations[0].location.center);
+
+  directions.value.setDestination(
+    locations[locations.length - 1].location.center
+  );
+
+  for (let index = 1; index < locations.length - 1; index++) {
+    directions.value.addWaypoint(index, locations[index].location.center);
+  }
+};
 
 const initialize = () => {
   map.value = new Map({
@@ -33,196 +135,13 @@ const initialize = () => {
     attributionControl: false,
   });
 
-  map.value.on("load", () => {
-    loading.value = false;
-
-    const directions = new MapboxDirections({
-        styles: [
-          {
-            id: "directions-route-line-casing",
-            type: "line",
-            source: "directions",
-            layout: {
-              "line-cap": "round",
-              "line-join": "round",
-            },
-            paint: {
-              "line-color": "#3b82f6",
-              "line-width": 4,
-            },
-            filter: [
-              "all",
-              ["in", "$type", "LineString"],
-              ["in", "route", "selected"],
-            ],
-          },
-        ],
-        accessToken: TOKEN,
-        unit: "imperial",
-        profile: "mapbox/walking",
-        controls: {
-          inputs: false,
-          instructions: false,
-          profileSwitcher: false,
-        },
-        interactive: false,
-        instructions: false,
-      });
-
-      map.addControl(directions);
-
-      // @ts-expect-error - MapboxDirections does not provide types
-      directions.on("route", ({ route }) => {
-        console.log(route);
-
-        for (let index = 0; index < route[0].legs.length; index++) {
-          const { steps } = route[0].legs[index];
-
-          const start = document.createElement("div");
-          start.className = "marker";
-          start.textContent = (index + 1).toLocaleString();
-
-          const originMarker = new mapboxgl.Marker(start)
-            .setLngLat(steps[0].maneuver.location)
-            .addTo(map);
-
-          markersRef.current.push(originMarker);
-
-          if (index !== route[0].legs.length - 1) continue;
-
-          const end = document.createElement("div");
-          end.className = "marker";
-          end.textContent = (index + 2).toLocaleString();
-
-          const destinationMarker = new mapboxgl.Marker(end)
-            .setLngLat(steps[steps.length - 1].maneuver.location)
-            .addTo(map);
-
-          markersRef.current.push(destinationMarker);
-        }
-
-        map.jumpTo({ center: [-122.2592173, 37.8721508] });
-
-        // Remove unnecessary layers
-        map.removeLayer("directions-route-line");
-        map.removeLayer("directions-waypoint-point-casing");
-        map.removeLayer("directions-waypoint-point");
-        map.removeLayer("directions-origin-point");
-        map.removeLayer("directions-destination-point");
-        map.removeLayer("directions-origin-label");
-        map.removeLayer("directions-destination-label");
-      });
-
-      map.addSource("campus", {
-        type: "geojson",
-        data: "/geojson/campus.geojson",
-      });
-
-      map.addLayer({
-        id: "campus-fill",
-        type: "line",
-        source: "campus",
-        layout: {},
-        paint: {
-          "line-width": 1,
-          "line-color": "#3b82f6",
-          "line-opacity": 0.5,
-          "line-dasharray": [2, 2],
-        },
-      });
-
-      map.addLayer({
-        id: "campus-line",
-        type: "fill",
-        source: "campus",
-        layout: {},
-        paint: {
-          "fill-color": "#3b82f6",
-          "fill-opacity": 0.05,
-        },
-      });
-
-      setDirections(directions);
-    });
-  });
-
-  window.L.tileLayer(
-    "https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}",
-    {
-      maxZoom: 18,
-      id: "mathhulk/cl0ovzd7j000u14mlcv35f827",
-      tileSize: 512,
-      zoomOffset: -1,
-      accessToken:
-        "pk.eyJ1IjoibWF0aGh1bGsiLCJhIjoiY2t6bTFhcDU2M2prOTJwa3VwcTJ2d2dpMiJ9.WEJWEP_qrKGXkYOgbIsaGg",
-    }
-  ).addTo(this.map);
-
-  const waypoints = locations.map((step) => {
-    const { center, title } = step.location;
-
-    if (title) return { latLng: center, name: title };
-    return { latLng: center };
-  });
-
-  window.L.Routing.control({
-    waypoints,
-    show: false,
-    fitSelectedRoutes: false,
-    addWaypoints: false,
-    draggableWaypoints: false,
-    lineOptions: {
-      styles: [{ color: "blue", opacity: 0.5, weight: 3 }],
-      missingRouteStyles: [{ color: "blue", opacity: 0.25, weight: 3 }],
-    },
-    createMarker: (i, waypoint) => {
-      if (waypoint.name) {
-        return window.L.marker(waypoint.latLng).on("click", () => {
-          this.setIndex(i);
-        });
-      }
-
-      return false;
-    },
-  })
-    .on("routesfound", (event) => {
-      const { summary, instructions } = event.routes[0];
-
-      // To-do: Meters to miles conversion function
-      this.distance = (summary.totalDistance / 1609.34)
-        .toFixed(2)
-        .toLocaleString();
-
-      let distance = 0;
-      let index = 1;
-
-      for (const instruction of instructions) {
-        distance += instruction.distance;
-
-        if (
-          instruction.type &&
-          ["WaypointReached", "DestinationReached"].includes(instruction.type)
-        ) {
-          if (this.steps[index].duration === undefined) continue;
-
-          // To-do: Unit based on distance
-          this.steps[index].distance = (distance / 1609.34)
-            .toFixed(2)
-            .toLocaleString();
-
-          distance = 0;
-          index++;
-        }
-      }
-
-      this.loading = false;
-    })
-    .addTo(this.map);
+  map.value.on("load", handleLoad);
 };
 
 onMounted(() => initialize());
 
 provide("map", map);
+provide("directions", directions);
 </script>
 
 <style lang="scss">

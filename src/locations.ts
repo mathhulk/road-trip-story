@@ -4,7 +4,7 @@ const locations = [
     location: {
       title: "Hans Christian Andersen Museum",
       city: "Solvang, California",
-      center: [34.5958017, -120.1390013],
+      center: [-120.1390013, 34.5958017],
       zoom: 15,
     },
     song: {
@@ -32,7 +32,7 @@ const locations = [
     location: {
       title: "Giovanni's Fish Market and Gallery",
       city: "Morro Bay, California",
-      center: [35.367538, -120.854415],
+      center: [-120.854415, 35.367538],
       zoom: 15,
     },
     song: {
@@ -60,7 +60,7 @@ const locations = [
     location: {
       title: "San Geronimo Pullout",
       city: "Cayucos, California",
-      center: [35.449288, -120.926682],
+      center: [-120.926682, 35.449288],
       zoom: 15,
     },
     song: {
@@ -102,7 +102,7 @@ const locations = [
     location: {
       title: "Willow Creek Beach Day Use",
       city: "Big Sur, California",
-      center: [35.893003, -121.461266],
+      center: [-121.461266, 35.893003],
       zoom: 15,
     },
     song: {
@@ -141,7 +141,7 @@ const locations = [
     location: {
       title: "Gamboa Point",
       city: "Big Sur, California",
-      center: [36.049497, -121.590168],
+      center: [-121.590168, 36.049497],
       zoom: 15,
     },
     song: {
@@ -170,7 +170,7 @@ const locations = [
     location: {
       title: "Cabrillo Highway",
       city: "Monterey County, California",
-      center: [36.091526, -121.618469],
+      center: [-121.618469, 36.091526],
       zoom: 15,
     },
     song: {
@@ -208,7 +208,7 @@ const locations = [
     location: {
       title: "Point Sur State Historic Park",
       city: "Monterey, California",
-      center: [36.31277, -121.888273],
+      center: [-121.888273, 36.31277],
       zoom: 15,
     },
     song: {
@@ -245,7 +245,7 @@ const locations = [
     location: {
       title: "Garrapata State Park Bluff Trail",
       city: "Carmel-by-the-Sea, California",
-      center: [36.4566858, -121.9241347],
+      center: [-121.9241347, 36.4566858],
       zoom: 15,
     },
     song: {
@@ -288,7 +288,7 @@ const locations = [
     location: {
       title: "Carmel Beach",
       city: "Carmel-by-the-Sea, California",
-      center: [36.5517019, -121.9285234],
+      center: [-121.9285234, 36.5517019],
       zoom: 16,
     },
     song: {
@@ -316,7 +316,7 @@ const locations = [
     location: {
       title: "Cabrillo Highway",
       city: "Davenport, California",
-      center: [37.064204, -122.253466],
+      center: [-122.253466, 37.064204],
       zoom: 15,
     },
     song: {
@@ -345,7 +345,7 @@ const locations = [
     location: {
       title: "Pelican Rock",
       city: "Davenport, California",
-      center: [37.07531, -122.261823],
+      center: [-122.261823, 37.07531],
       zoom: 15,
     },
     song: {
@@ -382,7 +382,7 @@ const locations = [
     location: {
       title: "San Quentin State Prison",
       city: "San Quentin, California",
-      center: [37.9386291, -122.4920359],
+      center: [-122.4920359, 37.9386291],
       zoom: 15,
     },
     song: {
@@ -411,7 +411,7 @@ const locations = [
     location: {
       title: "Charles M. Schulz Museum and Research Center",
       city: "Santa Rosa, California",
-      center: [38.460891, -122.735669],
+      center: [-122.735669, 38.460891],
       zoom: 15,
     },
     song: {
@@ -439,7 +439,7 @@ const locations = [
     location: {
       title: "Duncan's Landing Overlook",
       city: "Bodega Bay, California",
-      center: [38.3949913, -123.0945395],
+      center: [-123.0945395, 38.3949913],
       zoom: 15,
     },
     song: {
@@ -468,7 +468,7 @@ const locations = [
     location: {
       title: "Goat Rock State Beach",
       city: "Jenner, California",
-      center: [38.4418078, -123.1247433],
+      center: [-123.1247433, 38.4418078],
       zoom: 15,
     },
     song: {
@@ -508,7 +508,7 @@ const locations = [
     location: {
       title: "Glass Beach",
       city: "Fort Bragg, California",
-      center: [39.4519777, -123.813471],
+      center: [-123.813471, 39.4519777],
       zoom: 15,
     },
     song: {
@@ -547,7 +547,7 @@ const locations = [
     location: {
       title: "Legend of Big Foot",
       city: "Garberville, California",
-      center: [40.0339133, -123.7935677],
+      center: [-123.7935677, 40.0339133],
       zoom: 15,
     },
     song: {
@@ -575,7 +575,7 @@ const locations = [
     location: {
       title: "Elk Prairie Campground",
       city: "Orick, California",
-      center: [41.359295, -124.023715],
+      center: [-124.023715, 41.359295],
       zoom: 15,
     },
     song: {
@@ -612,7 +612,7 @@ const locations = [
     location: {
       title: "Atlas Grove",
       city: "Orick, California",
-      center: [41.3684072, -124.0178347],
+      center: [-124.0178347, 41.3684072],
       zoom: 15,
     },
     song: {
@@ -649,7 +649,7 @@ const locations = [
     location: {
       title: "Trees of Mystery",
       city: "Klamath, California",
-      center: [41.584849, -124.0882947],
+      center: [-124.0882947, 41.584849],
       zoom: 15,
     },
     song: {
@@ -677,7 +677,7 @@ const locations = [
     location: {
       title: "Redwood Highway",
       city: "Bertsch-Oceanview, California",
-      center: [41.6949661, -124.1164153],
+      center: [-124.1164153, 41.6949661],
       zoom: 15,
     },
     song: {
@@ -706,7 +706,7 @@ const locations = [
     location: {
       title: "Crescent Beach",
       city: "Crescent City, California",
-      center: [41.745094, -124.174649],
+      center: [-124.174649, 41.745094],
       zoom: 15,
     },
     song: {
@@ -746,7 +746,7 @@ const locations = [
     location: {
       title: "Welcome to Oregon",
       city: "Curry County, Oregon",
-      center: [41.998576, -124.208124],
+      center: [-124.208124, 41.998576],
       zoom: 15,
     },
     song: {

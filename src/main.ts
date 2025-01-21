@@ -1,6 +1,5 @@
 import { createApp } from "vue";
 
-import "mapbox-gl/dist/mapbox-gl.css";
 import "./assets/reset.css";
 
 import "@fontsource/inter/400.css";
