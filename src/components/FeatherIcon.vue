@@ -2,43 +2,27 @@
   <div class="feather-icon" v-html="html" />
 </template>
 
-<script>
-const feather = require("feather-icons");
+<script setup lang="ts">
+import feather, { type FeatherIcon } from "feather-icons";
+import { computed } from "vue";
 
-export default {
-  name: "FeatherIcon",
+const props = withDefaults(defineProps<{
+  icon: string;
+  width?: number;
+  height?: number;
+  color?: string;
+  fill?: string;
+}>(), {
+  width: 16,
+  height: 16,
+  color: "currentColor",
+  fill: "none"
+});
 
-  props: {
-    icon: {
-      type: String,
-      required: true
-    },
+const html = computed(() => {
+  const icon = (feather.icons as Record<string, FeatherIcon | undefined>)[props.icon];
+  if (!icon) throw new Error(`Unknown feather icon: ${props.icon}`);
 
-    width: {
-      type: Number,
-      default: 16
-    },
-
-    height: {
-      type: Number,
-      default: 16
-    },
-
-    color: {
-      type: String,
-      default: "currentColor"
-    },
-    
-    fill: {
-      type: String,
-      default: "none"
-    }
-  },
-
-  computed: {
-    html() {
-      return feather.icons[this.icon].toSvg({ width: this.width, height: this.height, color: this.color, fill: this.fill });
-    }
-  }
-}
+  return icon.toSvg({ width: props.width, height: props.height, color: props.color, fill: props.fill });
+});
 </script>
